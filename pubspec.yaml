@@ -19,6 +19,8 @@ dependencies:
   logger: any
   cached_network_image: ^2.2.0+1
   flutter_svg: ^0.18.0
+  intl_phone_number_input: ^0.6.0
+  otp_text_field: ^1.0.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -44,11 +46,8 @@ flutter:
       ios:
         pluginClass: HumanidFlutterSdkPlugin
 
-  # To add assets to your plugin package, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
-  #
+  assets:
+    - assets/images/
   # For details regarding assets in packages, see
   # https://flutter.dev/assets-and-images/#from-packages
   #
