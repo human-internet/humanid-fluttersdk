@@ -1,27 +1,54 @@
+import 'dart:io';
+
+import 'package:device_info/device_info.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:humanid_flutter_sdk/bloc/user/user_bloc.dart';
+import 'package:humanid_flutter_sdk/bloc/user/user_event.dart';
+import 'package:humanid_flutter_sdk/bloc/user/user_state.dart';
+import 'package:humanid_flutter_sdk/data/user/remote/model/request/login_request.dart';
+import 'package:humanid_flutter_sdk/data/user/remote/model/request/otp_request.dart';
+import 'package:humanid_flutter_sdk/data/user/remote/model/response/authorization_arguments.dart';
 import 'package:humanid_flutter_sdk/utils/colors.dart';
 import 'package:humanid_flutter_sdk/utils/size_config.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
+import 'package:progress_dialog/progress_dialog.dart';
 
 class BottomSheetOtp extends StatefulWidget {
-  final String phoneNumber;
+  final String phoneNumber, dialCode;
+  final AuthorizationArguments authorizationArguments;
 
-  const BottomSheetOtp({Key key, this.phoneNumber}) : super(key: key);
+  const BottomSheetOtp(
+      {Key key, this.phoneNumber, this.dialCode, this.authorizationArguments})
+      : super(key: key);
 
   @override
   _BottomSheetOtpState createState() => _BottomSheetOtpState();
 }
 
 class _BottomSheetOtpState extends State<BottomSheetOtp> {
+  ProgressDialog progressDialog;
   bool isCanResendOtp = false;
+  String verificationCode = '';
+  String deviceTypeId = '';
+  String deviceId = '';
+
+  @override
+  void initState() {
+    super.initState();
+    progressDialog = ProgressDialog(context);
+    _getDeviceId();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       height: getProportionateScreenHeight(700),
       child: Container(
+        height: getProportionateScreenHeight(700),
         padding: EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
             color: kWhiteColor,
@@ -56,7 +83,7 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
               style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 14,
-                  color: kGray1Color),
+                  color: kGrey1Color),
             ),
             SizedBox(
               height: 8,
@@ -67,7 +94,7 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
               style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
-                  color: kGray1Color),
+                  color: kGrey1Color),
             ),
             SizedBox(
               height: 16,
@@ -78,45 +105,161 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
               style: TextStyle(
                   fontWeight: FontWeight.w400,
                   fontSize: 12,
-                  color: kGray1Color),
+                  color: kGrey1Color),
             ),
             SizedBox(
               height: 24,
             ),
-            Padding(
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).viewInsets.bottom),
-              child: OTPTextField(
-                length: 4,
-                width: MediaQuery.of(context).size.width,
-                fieldWidth: 80,
-                style: TextStyle(fontSize: 17),
-                textFieldAlignment: MainAxisAlignment.spaceAround,
-                fieldStyle: FieldStyle.underline,
-                onCompleted: (pin) {
-                  print("Completed: " + pin);
-                },
-              ),
+            BlocListener<UserBloc, UserState>(
+              listenWhen: (previousState, state) {
+                return state is LoginHasData;
+              },
+              listener: (context, state) {
+                // Navigator.pop(context);
+              },
+              child:
+                  BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+                if (state is Loading) {
+                  return otpForm(widget.authorizationArguments.clientId,
+                      widget.authorizationArguments.clientSecret);
+                } else if (state is LoginHasData) {
+                  progressDialog.hide();
+                  Fluttertoast.showToast(
+                      msg: state.loginItem.exchangeToken.token);
+                  return otpForm(widget.authorizationArguments.clientId,
+                      widget.authorizationArguments.clientSecret);
+                } else if (state is Error) {
+                  progressDialog.hide();
+                  print(state.errorMessage);
+                  Fluttertoast.showToast(msg: state.errorMessage);
+                  return Container(
+                    child: otpForm(widget.authorizationArguments.clientId,
+                        widget.authorizationArguments.clientSecret),
+                  );
+                }
+                return Container(
+                  child: otpForm(widget.authorizationArguments.clientId,
+                      widget.authorizationArguments.clientSecret),
+                );
+              }),
             ),
             SizedBox(
               height: 24,
             ),
             if (isCanResendOtp)
-              FlatButton(
-                onPressed: () {
-                  print('RESEND');
+              BlocListener<UserBloc, UserState>(
+                listenWhen: (previousState, state) {
+                  return state is RequestOtpHasData;
                 },
-                child: Text('Resend code',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 10,
-                        color: kDarkBlueColor)),
+                listener: (context, state) {
+                  Fluttertoast.showToast(msg: state.otpItem.message);
+                },
+                child:
+                    BlocBuilder<UserBloc, UserState>(builder: (context, state) {
+                  if (state is Loading) {
+                    return buttonResendOtp(
+                        widget.authorizationArguments.clientId,
+                        widget.authorizationArguments.clientSecret);
+                  } else if (state is RequestOtpHasData) {
+                    progressDialog.hide();
+                    return buttonResendOtp(
+                        widget.authorizationArguments.clientId,
+                        widget.authorizationArguments.clientSecret);
+                  } else if (state is Error) {
+                    progressDialog.hide();
+                    print('Error Message : ${state.errorMessage}');
+                    Fluttertoast.showToast(msg: state.errorMessage);
+                    return Container(
+                      child: buttonResendOtp(
+                          widget.authorizationArguments.clientId,
+                          widget.authorizationArguments.clientSecret),
+                    );
+                  } else {
+                    return Container(
+                      child: buttonResendOtp(
+                          widget.authorizationArguments.clientId,
+                          widget.authorizationArguments.clientSecret),
+                    );
+                  }
+                }),
               )
             else
               buildTimerResendOtp()
           ],
         ),
+      ),
+    );
+  }
+
+  Future<void> _getDeviceId() async {
+    var deviceInfo = DeviceInfoPlugin();
+    if (Platform.isIOS) {
+      deviceTypeId = '2';
+      var iosDeviceInfo = await deviceInfo.iosInfo;
+      deviceId = iosDeviceInfo.identifierForVendor;
+    } else {
+      deviceTypeId = '1';
+      var androidDeviceInfo = await deviceInfo.androidInfo;
+      deviceId = androidDeviceInfo.androidId;
+    }
+  }
+
+  Widget buttonResendOtp(String clientId, String clientSecret) {
+    return FlatButton(
+      onPressed: () async {
+        if (progressDialog.isShowing()) {
+          progressDialog.hide();
+        }
+        await progressDialog.show();
+        context.bloc<UserBloc>().add(RequestOtp(
+            otpRequest: OtpRequest(
+                clientId: clientId,
+                clientSecret: clientSecret,
+                countryCode: widget.dialCode,
+                phone: widget.phoneNumber)));
+      },
+      child: Text('Resend code',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+              fontWeight: FontWeight.w500,
+              fontSize: 10,
+              color: kDarkBlueColor)),
+    );
+  }
+
+  Widget otpForm(String clientId, String clientSecret) {
+    return Padding(
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: OTPTextField(
+        length: 4,
+        width: MediaQuery.of(context).size.width,
+        fieldWidth: 80,
+        style: TextStyle(fontSize: 17),
+        textFieldAlignment: MainAxisAlignment.spaceAround,
+        fieldStyle: FieldStyle.underline,
+        onCompleted: (pin) async {
+          setState(() {
+            verificationCode = pin;
+          });
+
+          progressDialog = ProgressDialog(context);
+          if (progressDialog.isShowing()) {
+            progressDialog.hide();
+          }
+
+          await progressDialog.show();
+          context.bloc<UserBloc>().add(Login(
+              loginRequest: LoginRequest(
+                  clientId: clientId,
+                  clientSecret: clientSecret,
+                  countryCode: widget.dialCode,
+                  phone: widget.phoneNumber,
+                  deviceTypeId: deviceTypeId,
+                  deviceId: deviceId,
+                  verificationCode: pin,
+                  notifId: '1')));
+        },
       ),
     );
   }
@@ -132,13 +275,13 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
               fontWeight: FontWeight.w500, fontSize: 10, color: kDarkBlueColor),
         ),
         TweenAnimationBuilder(
-          onEnd: () {
+          onEnd: () async {
             setState(() {
               isCanResendOtp = true;
             });
           },
-          tween: Tween(begin: 30.0, end: 0.0),
-          duration: Duration(seconds: 30),
+          tween: Tween(begin: 60.0, end: 0.0),
+          duration: Duration(seconds: 60),
           builder: (_, value, child) => Text(
             "${value.toInt()}s",
             style: TextStyle(

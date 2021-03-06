@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:humanid_flutter_sdk/humanid_flutter_sdk.dart';
+import 'package:humanid_flutter_sdk/ui/human_id_sdk.dart';
 import 'package:humanid_flutter_sdk/utils/colors.dart';
 import 'package:humanid_flutter_sdk/utils/custom_button.dart';
 import 'package:humanid_flutter_sdk/utils/routes.dart';
@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
 }
 
 class ExamplePage extends StatefulWidget {
-  static String routeName = '/human_id_sdk_page';
+  static String routeName = '/example_page';
 
   @override
   _ExamplePageState createState() => _ExamplePageState();
@@ -42,6 +42,7 @@ class ExamplePage extends StatefulWidget {
 
 class _ExamplePageState extends State<ExamplePage> {
   final TextEditingController controller = TextEditingController();
+  String token = '';
 
   @override
   Widget build(BuildContext context) {
@@ -53,8 +54,20 @@ class _ExamplePageState extends State<ExamplePage> {
           textColor: kWhiteColor,
           btnColor: kPrimaryColor,
           text: 'Continue with HumanID',
-          press: () {
-            Navigator.pushNamed(context, HumanIdSDK.routeName);
+          press: () async {
+            token = await showModalBottomSheet<String>(
+                backgroundColor: Colors.transparent,
+                context: context,
+                builder: (BuildContext buildContext) {
+                  return HumanIDSDK(
+                    appName: 'Example App',
+                    iconUrl:
+                        'https://isscroberto.files.wordpress.com/2017/12/movie_logo.png',
+                    clientId: 'MOBILE_m65nshUmT9BDchwFEKdz',
+                    clientSecret:
+                        '12FZ3llRg5KFDuJFLftOxlQof1DKBtgL7mZrY4AE1zaM78o1Fvza2IZdKjdxT45Q',
+                  );
+                });
           },
         ),
       ),
