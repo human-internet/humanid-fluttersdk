@@ -41,9 +41,6 @@ class ExamplePage extends StatefulWidget {
 }
 
 class _ExamplePageState extends State<ExamplePage> {
-  final TextEditingController controller = TextEditingController();
-  String token = '';
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -54,8 +51,8 @@ class _ExamplePageState extends State<ExamplePage> {
           textColor: kWhiteColor,
           btnColor: kPrimaryColor,
           text: 'Continue with HumanID',
-          press: () async {
-            token = await showModalBottomSheet<String>(
+          press: () {
+            showModalBottomSheet(
                 backgroundColor: Colors.transparent,
                 context: context,
                 builder: (BuildContext buildContext) {
@@ -66,6 +63,9 @@ class _ExamplePageState extends State<ExamplePage> {
                     clientId: 'MOBILE_m65nshUmT9BDchwFEKdz',
                     clientSecret:
                         '12FZ3llRg5KFDuJFLftOxlQof1DKBtgL7mZrY4AE1zaM78o1Fvza2IZdKjdxT45Q',
+                    onSuccessLogin: (String token) {
+                      print("TOKEN : $token");
+                    },
                   );
                 });
           },

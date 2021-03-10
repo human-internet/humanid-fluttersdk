@@ -8,16 +8,22 @@ import 'package:humanid_flutter_sdk/utils/size_config.dart';
 class HumanIDSDK extends StatelessWidget {
   static String routeName = '/humanid_sdk';
   final String appName, iconUrl, clientId, clientSecret;
+  final void Function(String) onSuccessLogin;
 
   const HumanIDSDK(
-      {Key key, this.iconUrl, this.appName, this.clientId, this.clientSecret})
+      {Key key,
+      this.iconUrl,
+      this.appName,
+      this.clientId,
+      this.clientSecret,
+      this.onSuccessLogin})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Container(
-      height: getProportionateScreenHeight(300),
+      height: getProportionateScreenHeight(370),
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 16),
         decoration: BoxDecoration(
@@ -60,13 +66,13 @@ class HumanIDSDK extends StatelessWidget {
               child: FlatButton(
                 padding: EdgeInsets.zero,
                 onPressed: () {
-                  Navigator.pushReplacementNamed(
-                      context, AuthorizationScreen.routeName,
-                      arguments: AuthorizationArguments(
-                          appName: appName,
-                          iconUrl: iconUrl,
-                          clientId: clientId,
-                          clientSecret: clientSecret));
+                  Navigator.pushNamed(context, AuthorizationScreen.routeName,
+                          arguments: AuthorizationArguments(
+                              appName: appName,
+                              iconUrl: iconUrl,
+                              clientId: clientId,
+                              clientSecret: clientSecret))
+                      .then((token) => _closePage(context, token));
                 },
                 child: Padding(
                   padding: const EdgeInsets.all(11.0),
@@ -127,5 +133,11 @@ class HumanIDSDK extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _closePage(BuildContext context, String token) async {
+    onSuccessLogin(token);
+    await Future.delayed(const Duration(milliseconds: 100))
+        .then((value) => Navigator.pop(context));
   }
 }

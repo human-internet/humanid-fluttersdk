@@ -115,7 +115,11 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
                 return state is LoginHasData;
               },
               listener: (context, state) {
-                // Navigator.pop(context);
+                if (state is LoginHasData) {
+                  progressDialog.hide().whenComplete(() {
+                    Navigator.pop(context, state.loginItem.exchangeToken.token);
+                  });
+                }
               },
               child:
                   BlocBuilder<UserBloc, UserState>(builder: (context, state) {
@@ -123,9 +127,6 @@ class _BottomSheetOtpState extends State<BottomSheetOtp> {
                   return otpForm(widget.authorizationArguments.clientId,
                       widget.authorizationArguments.clientSecret);
                 } else if (state is LoginHasData) {
-                  progressDialog.hide();
-                  Fluttertoast.showToast(
-                      msg: state.loginItem.exchangeToken.token);
                   return otpForm(widget.authorizationArguments.clientId,
                       widget.authorizationArguments.clientSecret);
                 } else if (state is Error) {

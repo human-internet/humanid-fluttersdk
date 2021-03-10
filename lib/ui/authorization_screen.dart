@@ -81,11 +81,8 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
                           onInputChanged: (PhoneNumber number) {
                             dialCode = number.dialCode.replaceAll('+', '');
                             phoneNumber = number.phoneNumber;
-                            print(number.phoneNumber);
                           },
-                          onInputValidated: (bool value) {
-                            print(value);
-                          },
+                          onInputValidated: (bool value) {},
                           selectorConfig: SelectorConfig(
                             backgroundColor: kPrimaryColor,
                             selectorType: PhoneInputSelectorType.DIALOG,
@@ -191,7 +188,7 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
   }
 
   void _showModalBottomSheetOtp(AuthorizationArguments authorizationArguments) {
-    Future<void> future = showModalBottomSheet<void>(
+    Future<String> future = showModalBottomSheet<String>(
         backgroundColor: Colors.transparent,
         context: context,
         isScrollControlled: true,
@@ -207,13 +204,12 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
             ),
           );
         });
-    future.then((void value) => _closeModal(value));
+    future.then((String value) => _closeModal(value));
   }
 
-  void _closeModal(void value) async {
-    print('modal closed');
+  void _closeModal(String token) async {
     await Future.delayed(const Duration(milliseconds: 100))
-        .then((value) => Navigator.pop(context));
+        .then((value) => Navigator.pop(context, token));
   }
 
   Widget buttonRequestOtp(String clientId, String clientSecret) {
@@ -225,7 +221,6 @@ class _AuthorizationScreenState extends State<AuthorizationScreen> {
         press: () {
           _key.currentState.save();
           if (_key.currentState.validate()) {
-            print(controller.text);
             FocusScope.of(context).unfocus();
             context.bloc<UserBloc>().add(RequestOtp(
                 otpRequest: OtpRequest(

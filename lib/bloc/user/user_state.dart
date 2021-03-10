@@ -26,7 +26,7 @@ class Error extends UserState {
   List<Object> get props => [errorMessage];
 
   @override
-  String toString() => 'Movies Favorite No Data (message : $errorMessage)';
+  String toString() => 'Error (message : $errorMessage)';
 }
 
 class LoginHasData extends UserState {
