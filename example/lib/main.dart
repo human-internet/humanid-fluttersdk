@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:humanid_flutter_sdk/data/user/remote/model/response/authorization_arguments.dart';
 import 'package:humanid_flutter_sdk/ui/human_id_sdk.dart';
-import 'package:humanid_flutter_sdk/utils/colors.dart';
-import 'package:humanid_flutter_sdk/utils/custom_button.dart';
+import 'package:humanid_flutter_sdk/utils/authorization_arguments.dart';
 import 'package:humanid_flutter_sdk/utils/routes.dart';
 
 void main() {
@@ -23,7 +21,7 @@ class _MyAppState extends State<MyApp> {
         routes: routes,
         home: Scaffold(
             appBar: AppBar(
-              backgroundColor: kPrimaryColor,
+              backgroundColor: Color(0xFF075070),
               title: const Text('Example app'),
             ),
             body: ExamplePage()));
@@ -47,25 +45,31 @@ class _ExamplePageState extends State<ExamplePage> {
         getTokenFromLogin(token),
         Padding(
           padding: const EdgeInsets.all(16.0),
-          child: CustomButton(
-            textColor: kWhiteColor,
-            btnColor: kPrimaryColor,
-            text: 'Continue with HumanID',
-            press: () {
-              configureHumanIdSDK(
-                  context: context,
-                  arguments: AuthorizationArguments(
-                    appName: 'YOUR_APP_NAME',
-                    iconUrl: 'YOUR_APP_ICON',
-                    clientId: 'YOUR_CLIENT_ID',
-                    clientSecret: 'YOUR_CLIENT_SECRET',
-                  ),
-                  onSuccessLogin: (accessToken) {
-                    setState(() {
-                      token = accessToken;
-                    });
+          child: FlatButton(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+            color: Color(0xFF075070),
+            child: Text(
+              'Continue with HumanID',
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: 14,
+                  color: Color(0xFFFFFFFF)),
+            ),
+            onPressed: configureHumanIdSDK(
+                context: context,
+                arguments: AuthorizationArguments(
+                  appName: 'YOUR_APP_NAME',
+                  iconUrl: 'YOUR_APP_ICON',
+                  clientId: 'YOUR_CLIENT_ID',
+                  clientSecret: 'YOUR_CLIENT_SECRET',
+                ),
+                onSuccessLogin: (accessToken) {
+                  setState(() {
+                    token = accessToken;
                   });
-            },
+                }),
           ),
         ),
       ],

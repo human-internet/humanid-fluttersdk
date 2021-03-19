@@ -11,7 +11,7 @@ import 'package:humanid_flutter_sdk/bloc/user/user_event.dart';
 import 'package:humanid_flutter_sdk/bloc/user/user_state.dart';
 import 'package:humanid_flutter_sdk/data/user/remote/model/request/login_request.dart';
 import 'package:humanid_flutter_sdk/data/user/remote/model/request/otp_request.dart';
-import 'package:humanid_flutter_sdk/data/user/remote/model/response/authorization_arguments.dart';
+import 'package:humanid_flutter_sdk/utils/authorization_arguments.dart';
 import 'package:humanid_flutter_sdk/utils/colors.dart';
 import 'package:otp_text_field/otp_field.dart';
 import 'package:otp_text_field/style.dart';
