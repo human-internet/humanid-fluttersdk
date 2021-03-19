@@ -1,5 +1,5 @@
 <p align="center">  
-  <img src="https://github.com/bluenumberfoundation/humanid-fluttersdk/blob/master/human-id-logo.png" width="200" height="200">  
+  <img src="https://raw.githubusercontent.com/bluenumberfoundation/humanid-fluttersdk/master/human-id-logo.png" width="200" height="200">
 </p>  
   
 <h1 align="center">HumanID Flutter SDK</h1>  
