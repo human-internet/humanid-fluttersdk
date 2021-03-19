@@ -35,10 +35,6 @@ class _HumanIDSDKState extends State<HumanIDSDK> {
     SizeConfig().init(context);
     final AuthorizationArguments authorizationArguments =
         ModalRoute.of(context).settings.arguments;
-    SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-      systemNavigationBarColor: kWhiteColor,
-      statusBarColor: kPrimaryColor,
-    ));
     return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
@@ -279,4 +275,23 @@ class _HumanIDSDKState extends State<HumanIDSDK> {
       ),
     ));
   }
+}
+
+configureHumanIdSDK(
+    {BuildContext context,
+    Function onSuccessLogin,
+    AuthorizationArguments arguments}) {
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    systemNavigationBarColor: kWhiteColor,
+    statusBarColor: kPrimaryColor,
+  ));
+  Navigator.pushNamed(context, HumanIDSDK.routeName,
+      arguments: AuthorizationArguments(
+        appName: arguments.appName,
+        iconUrl: arguments.iconUrl,
+        clientId: arguments.clientId,
+        clientSecret: arguments.clientSecret,
+      )).then((accessToken) {
+    onSuccessLogin(accessToken);
+  });
 }

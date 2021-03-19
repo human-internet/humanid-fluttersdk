@@ -15,13 +15,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final GlobalKey<NavigatorState> navigatorKey =
-      GlobalKey(debugLabel: "Main Navigator");
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        navigatorKey: navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Human ID Example',
         routes: routes,
@@ -35,8 +31,6 @@ class _MyAppState extends State<MyApp> {
 }
 
 class ExamplePage extends StatefulWidget {
-  static String routeName = '/example_page';
-
   @override
   _ExamplePageState createState() => _ExamplePageState();
 }
@@ -58,17 +52,19 @@ class _ExamplePageState extends State<ExamplePage> {
             btnColor: kPrimaryColor,
             text: 'Continue with HumanID',
             press: () {
-              Navigator.pushNamed(context, HumanIDSDK.routeName,
+              configureHumanIdSDK(
+                  context: context,
                   arguments: AuthorizationArguments(
                     appName: 'YOUR_APP_NAME',
                     iconUrl: 'YOUR_APP_ICON',
                     clientId: 'YOUR_CLIENT_ID',
                     clientSecret: 'YOUR_CLIENT_SECRET',
-                  )).then((accessToken) {
-                setState(() {
-                  token = accessToken;
-                });
-              });
+                  ),
+                  onSuccessLogin: (accessToken) {
+                    setState(() {
+                      token = accessToken;
+                    });
+                  });
             },
           ),
         ),
