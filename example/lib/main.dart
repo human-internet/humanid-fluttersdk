@@ -57,7 +57,7 @@ class _ExamplePageState extends State<ExamplePage> {
                   fontSize: 14,
                   color: Color(0xFFFFFFFF)),
             ),
-            onPressed: configureHumanIdSDK(
+            onPressed: () => configureHumanIdSDK(
                 context: context,
                 arguments: AuthorizationArguments(
                   appName: 'YOUR_APP_NAME',
