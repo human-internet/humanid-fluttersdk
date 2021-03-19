@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:humanid_flutter_sdk/data/user/remote/model/response/authorization_arguments.dart';
 import 'package:humanid_flutter_sdk/ui/human_id_sdk.dart';
 import 'package:humanid_flutter_sdk/utils/colors.dart';
 import 'package:humanid_flutter_sdk/utils/custom_button.dart';
@@ -41,36 +42,48 @@ class ExamplePage extends StatefulWidget {
 }
 
 class _ExamplePageState extends State<ExamplePage> {
+  String token;
+
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: CustomButton(
-          textColor: kWhiteColor,
-          btnColor: kPrimaryColor,
-          text: 'Continue with HumanID',
-          press: () {
-            showModalBottomSheet(
-                backgroundColor: Colors.transparent,
-                context: context,
-                builder: (BuildContext buildContext) {
-                  return HumanIDSDK(
-                    appName: 'Example App',
-                    iconUrl:
-                        'https://isscroberto.files.wordpress.com/2017/12/movie_logo.png',
-                    clientId: 'MOBILE_m65nshUmT9BDchwFEKdz',
-                    clientSecret:
-                        '12FZ3llRg5KFDuJFLftOxlQof1DKBtgL7mZrY4AE1zaM78o1Fvza2IZdKjdxT45Q',
-                    onSuccessLogin: (String token) {
-                      print("TOKEN : $token");
-                    },
-                  );
+        child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        getTokenFromLogin(token),
+        Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: CustomButton(
+            textColor: kWhiteColor,
+            btnColor: kPrimaryColor,
+            text: 'Continue with HumanID',
+            press: () {
+              Navigator.pushNamed(context, HumanIDSDK.routeName,
+                  arguments: AuthorizationArguments(
+                    appName: 'YOUR_APP_NAME',
+                    iconUrl: 'YOUR_APP_ICON',
+                    clientId: 'YOUR_CLIENT_ID',
+                    clientSecret: 'YOUR_CLIENT_SECRET',
+                  )).then((accessToken) {
+                setState(() {
+                  token = accessToken;
                 });
-          },
+              });
+            },
+          ),
         ),
-      ),
+      ],
     ));
+  }
+
+  Widget getTokenFromLogin(String token) {
+    if (token != null) {
+      return Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Text('Token : $token'),
+      );
+    } else {
+      return Container();
+    }
   }
 }
