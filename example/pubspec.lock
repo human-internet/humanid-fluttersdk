@@ -283,7 +283,7 @@ packages:
     source: hosted
     version: "0.16.1"
   intl_phone_number_input:
-    dependency: "direct main"
+    dependency: transitive
     description:
       name: intl_phone_number_input
       url: "https://pub.dartlang.org"
