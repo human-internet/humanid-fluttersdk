@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Update readme.
+
 ## 0.0.3
 
 * Update logo and readme.

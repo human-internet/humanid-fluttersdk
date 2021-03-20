@@ -26,7 +26,7 @@ Please update to the latest stable SDK!
 ##### pubspec.yaml  
 ```
 dependencies:
-  humanid_flutter_sdk: ^0.0.1
+  humanid_flutter_sdk: ^0.0.4
 ```  
   
 ## Credentials Access  
