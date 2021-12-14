@@ -31,7 +31,7 @@ dependencies:
   
 ## Credentials Access  
   
-Get the appId and appSecret by dropping us an email [developers@human-id.org](mailto:developers@human-id.org).  
+Create an account and an app at our [developer console](https://developers.human-id.org).  
 
 ## How to use  
   
@@ -59,7 +59,7 @@ configureHumanIdSDK(
  
 
 ## You're set!
-Now you can integrate your Flutter app to humanID. See the full [sample](https://github.com/bluenumberfoundation/humanid-fluttersdk/tree/master/example) here to learn more.
+Now you can integrate your Flutter app to humanID. See the full [sample](https://github.com/human-internet/humanid-fluttersdk/tree/master/example) here to learn more.
 
 ## License
 Copyright 2019-2020 Bluenumber Foundation Licensed under the GNU General Public License v3.0
