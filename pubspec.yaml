@@ -6,6 +6,7 @@ documentation: https://github.com/bluenumberfoundation/humanid-fluttersdk
 
 environment:
   sdk: ">=2.17.3 <3.0.0"
+  flutter: ">=1.10.0"
 
 dependencies:
   flutter:
