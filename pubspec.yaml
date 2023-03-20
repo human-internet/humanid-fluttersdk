@@ -1,41 +1,61 @@
 name: humanid_flutter_sdk
 description: Human ID Flutter SDK
-version: 0.0.4
+version: 0.0.5
 homepage: https://human-id.org
 documentation: https://github.com/bluenumberfoundation/humanid-fluttersdk
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
-  flutter: ">=1.20.0"
+  sdk: ">=2.17.3 <3.0.0"
+  flutter: ">=1.10.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  dio: ^3.0.10
-  flutter_bloc: ^6.0.1
-  equatable: ^1.2.3
-  retrofit: ^1.3.4+1
-  json_serializable: ^3.5.1
-  logger: ^0.9.4
-  cached_network_image: ^2.2.0+1
-  flutter_svg: ^0.18.0
-  intl_phone_number_input: ^0.6.0
-  otp_text_field: ^1.0.2
-  fluttertoast: ^7.1.6
-  device_info: ^1.0.0
-  progress_dialog: ^1.2.4
-  json_annotation: ^3.1.1
+  #network
+  dio: ^4.0.6
+  retrofit: ^3.0.1+1
+
+  #model
+  equatable: ^2.0.5
+  json_serializable: ^6.4.0
+  json_annotation : ^4.7.0
+
+  #injection
+  get_it: ^7.2.0
+
+  #bloc
+  flutter_bloc: ^8.1.1
+
+  #utils
+  logger: ^1.1.0
+
+  #UI
+  fluttertoast: ^8.0.9
+  cupertino_icons: ^1.0.5
+  hexcolor: ^2.0.7
+  intl: ^0.17.0
+
+  #WebView
+  flutter_inappwebview: ^5.4.3+7
+
+  #freezed
+  freezed_annotation: ^2.0.4
+
+  #downloader
+  flutter_downloader: ^1.8.4
+
+  #path
+  path_provider: ^2.0.11
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  retrofit_generator: 1.4.0
-  build_runner: 1.10.1
+  flutter_lints: ^2.0.1
+  build_runner: ^2.2.1
+  retrofit_generator: ^4.0.3+2
+  alice: ^0.2.5
+  freezed: ^2.0.4
 
-dependency_overrides:
-# For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspec
-
-# The following section is specific to Flutter.
 flutter:
   # This section identifies this Flutter project as a plugin project.
   # The 'pluginClass' and Android 'package' identifiers should not ordinarily

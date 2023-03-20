@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Update SDK using web login and migrate to Flutter 3
+
 ## 0.0.4
 
 * Update readme.
